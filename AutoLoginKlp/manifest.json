@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+
+  "name": "Auto Login for Testsystems KLP Swiss Post",
+  
+  "description": "auto login with entered email-address using the pw email-address1 and auto login when sms code is requested",
+  
+  "version": "1.0.0.0",
+  "author": "Stef Käser",
+  "icons": { "16": "icon16.png",
+			 "48": "icon48.png",
+			 "128": "icon128.png" },
+  
+  "content_scripts": [
+    {
+      "matches": ["https://accountint1.post.ch/idp/*","https://accountint2.post.ch/idp/*"],
+      "js": ["contentscript.js"]
+    }
+  ]
+}
