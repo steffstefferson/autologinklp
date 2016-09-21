@@ -8,4 +8,4 @@ If the requested application also requires two step authentification, the displa
 Install Link:  
 https://chrome.google.com/webstore/detail/fhnkgngddnhbblpmnpaikjladdolilim
 
-Credits: Lurin, the PostIdea-decliner how inspired me to find other solutions.
+Credits: Lurin, the PostIdea-decliner who inspired me to find other solutions.
