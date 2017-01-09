@@ -9,7 +9,7 @@ var initAutoLoginScript = function(){
 // so we stop our scripts to prevent an endless loop
 var noErrorWithLastInput = function(){
 	var errorElement = document.getElementById('err_global'); 
-	return (errorElement && errorElement.innerHTML);
+	return (errorElement && errorElement.innerHTML.trim());
 }
 
 
