@@ -1,4 +1,13 @@
+var insertedEmail = '';
+var rememberEmailInitialized = false;
+
 var initAutoLoginScript = function() {
+	
+	chrome.storage.local.get(['insertedEmail'], function(result) {
+	  console.log('Value is set to ' + result.insertedEmail);
+	  insertedEmail = result.insertedEmail;
+    });
+	
   chrome.storage.sync.get(
     {
       fillPw: true,
@@ -14,6 +23,7 @@ var initAutoLoginScript = function() {
           autoPassword(options) ||
           autoPasswordSwissId(options) ||
           autoSmsCode(options) ||
+		  checkRememberEmail(options) ||
           autoSwissIdCode(options) ||
           checkAtuoRedirectToSwissId();
 
@@ -61,19 +71,42 @@ var autoPassword = function(options) {
   }
 };
 
+var checkRememberEmail = function(){
+	if(rememberEmailInitialized) return;
+	var inputEl = document.getElementById('idToken4');
+	if(!inputEl) return;
+	rememberEmailInitialized = true;
+	inputEl.addEventListener('blur',(e) => {
+	 var email = e.target.value;
+	 if(email == ''){
+		return;
+	 }
+	 chrome.storage.local.set({insertedEmail: email}, function() {
+          console.log('Value is set to ' + email);
+      });
+	});
+}
+
 var autoPasswordSwissId = function(options) {
-  if (!options.fillPw) {
-    return;
+  if (!options.fillPw) return;
+  if(!document.getElementById("idToken5")) return;
+  
+  var enteredEmail = "";
+  
+
+  if(insertedEmail && insertedEmail.length > 0){
+	  console.log('use inserted emailaddress',insertedEmail);
+	  enteredEmail = insertedEmail;
+  }else{
+	  var emailInput = document.getElementById("callback_3");
+	    if (emailInput && emailInput.innerText) {
+			enteredEmail = emailInput.innerText;
+		}else{
+			return;
+		}
   }
 
-  var emailInput = document.getElementById("callback_3");
-
-  if (emailInput && emailInput.innerText) {
-    var enteredEmail = emailInput.innerText;
-    if (
-      enteredEmail &&
-      /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/.test(enteredEmail)
-    ) {
+  if (enteredEmail && /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/.test(enteredEmail)) {
       var calculatedPw = calculatePw(enteredEmail, options);
       document.getElementById("idToken5").value = calculatedPw;
       console.log("password set to " + calculatedPw);
@@ -81,7 +114,7 @@ var autoPasswordSwissId = function(options) {
       loginButton.click();
       return true;
     }
-  }
+  
 };
 
 function calculatePw(enteredEmail, options) {
